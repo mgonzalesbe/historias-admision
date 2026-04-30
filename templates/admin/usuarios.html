@@ -138,9 +138,53 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" name="password" id="createPassword" required disabled>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="createPassword" required disabled>
+                            <button class="btn btn-outline-secondary" type="button" id="createTogglePassword" title="Mostrar / ocultar contraseña" disabled>
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                         <div id="createPasswordHint" class="form-text text-muted">
                             Completa nombre, usuario, correo y rol para habilitar este campo.
+                        </div>
+                        <div class="password-strength mt-2">
+                            <div class="progress" role="progressbar" aria-label="Fortaleza de contraseña" aria-valuemin="0" aria-valuemax="100">
+                                <div id="createPasswordStrengthBar" class="progress-bar strength-fragil" style="width: 0%"></div>
+                            </div>
+                            <small id="createPasswordStrengthText" class="password-strength-text text-muted">Fortaleza: Fragil</small>
+                        </div>
+                        <ul class="password-rules mt-2 mb-0 small text-muted">
+                            <li id="createRuleLength">Mínimo 8 caracteres</li>
+                            <li id="createRuleUpper">Al menos una mayúscula</li>
+                            <li id="createRuleLower">Al menos una minúscula</li>
+                            <li id="createRuleNumber">Al menos un número</li>
+                            <li id="createRuleSpecial">Al menos un carácter especial</li>
+                        </ul>
+                        <div class="password-suggestions mt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Longitud sugerida</small>
+                                <small class="fw-semibold"><span id="createPasswordLengthValue">12</span> caracteres</small>
+                            </div>
+                            <input
+                                type="range"
+                                class="form-range"
+                                id="createPasswordLengthRange"
+                                min="8"
+                                max="15"
+                                step="1"
+                                value="12"
+                                disabled
+                            >
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">8</small>
+                                <button type="button" class="btn btn-link btn-sm p-0" id="createRefreshSuggestion" disabled>
+                                    <i class="bi bi-arrow-repeat"></i> Nueva sugerencia
+                                </button>
+                                <small class="text-muted">15</small>
+                            </div>
+                            <small class="form-text text-muted">
+                                La sugerencia aparece en el campo contraseña y puedes editarla libremente.
+                            </small>
                         </div>
                     </div>
                     <div class="mb-3">
