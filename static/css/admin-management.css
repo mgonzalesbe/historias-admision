@@ -74,6 +74,24 @@
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
 }
 
+.admin-create-user-modal {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+}
+
+.admin-create-user-modal .mb-3,
+.admin-create-user-modal .mb-2 {
+  margin-bottom: 0.85rem !important;
+}
+
+.password-panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 0.9rem;
+}
+
 .password-strength .progress {
   height: 0.55rem;
   border-radius: 999px;
@@ -149,6 +167,10 @@
   .hc-toast {
     min-width: 0;
     width: min(420px, calc(100vw - 1rem));
+  }
+
+  .password-panel {
+    padding: 0.75rem;
   }
 }
 

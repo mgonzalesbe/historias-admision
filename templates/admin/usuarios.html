@@ -121,13 +121,13 @@
     </div>
 
     <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <form class="modal-content" method="POST" action="{{ url_for('admin.usuarios') }}" id="adminCreateUserForm">
                 <div class="modal-header">
                     <h5 class="modal-title">Nuevo Usuario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body admin-create-user-modal">
                     <div class="mb-3">
                         <label class="form-label">Nombre Completo</label>
                         <input type="text" class="form-control" name="nombre_completo" id="createNombreCompleto" required>
@@ -137,6 +137,17 @@
                         <input type="text" class="form-control" name="username" id="createUsername" required>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" name="email" id="createEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select class="form-select" name="role" id="createRole" required>
+                            <option value="admission">admission</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 password-panel">
                         <label class="form-label">Contraseña</label>
                         <div class="input-group">
                             <input type="password" class="form-control" name="password" id="createPassword" required disabled>
@@ -186,17 +197,6 @@
                                 La sugerencia aparece en el campo contraseña y puedes editarla libremente.
                             </small>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" name="email" id="createEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Rol</label>
-                        <select class="form-select" name="role" id="createRole" required>
-                            <option value="admission">admission</option>
-                            <option value="admin">admin</option>
-                        </select>
                     </div>
                     <input type="hidden" name="generation_time_ms" id="createGenerationTimeMs" value="0">
                 </div>
