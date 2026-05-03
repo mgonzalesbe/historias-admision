@@ -3,7 +3,8 @@ import time
 from io import BytesIO
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify, send_file
 from openpyxl import Workbook
-from openpyxl.styles import Font
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.utils import get_column_letter
 from Aplicacion.Servicios.HistoriaService import HistoriaService
 from Aplicacion.Servicios.AuthService import AuthService
 from Aplicacion.Servicios.TokenService import TokenService
@@ -30,6 +31,20 @@ _logger = logging.getLogger(__name__)
 
 def _build_password_metrics_xlsx(per_user, summary):
     """Genera un .xlsx con la tabla por usuario y un bloque de resumen global."""
+    thin = Side(style="thin", color="B4B8C4")
+    border_grid = Border(left=thin, right=thin, top=thin, bottom=thin)
+    align_left = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    align_center = Alignment(horizontal="center", vertical="center")
+    align_right = Alignment(horizontal="right", vertical="center")
+
+    header_fill = PatternFill("solid", fgColor="1E3A5F")
+    header_font = Font(bold=True, color="FFFFFF", size=11)
+    zebra_fill = PatternFill("solid", fgColor="F0F4FA")
+    summary_title_fill = PatternFill("solid", fgColor="2563EB")
+    summary_title_font = Font(bold=True, color="FFFFFF", size=11)
+    summary_label_fill = PatternFill("solid", fgColor="E8EEF7")
+    summary_value_fill = PatternFill("solid", fgColor="FFFFFF")
+
     wb = Workbook()
     ws = wb.active
     ws.title = "Métricas por usuario"
@@ -42,8 +57,7 @@ def _build_password_metrics_xlsx(per_user, summary):
         "Último registro",
     ]
     ws.append(headers)
-    for cell in ws[1]:
-        cell.font = Font(bold=True)
+    n_users = len(per_user)
     for item in per_user:
         last_at = item.get("last_metric_at")
         last_at_str = last_at.strftime("%d/%m/%Y %H:%M") if last_at else "-"
@@ -59,8 +73,6 @@ def _build_password_metrics_xlsx(per_user, summary):
         )
     ws.append([])
     ws.append(["Resumen"])
-    for cell in ws[ws.max_row]:
-        cell.font = Font(bold=True)
     total_pw = int(summary.get("total_passwords") or 0)
     avg_len = float(summary.get("avg_length") or 0.0)
     avg_len_rounded = int(avg_len + 0.5)
@@ -68,6 +80,68 @@ def _build_password_metrics_xlsx(per_user, summary):
     ws.append(["Total contraseñas generadas", total_pw])
     ws.append(["Promedio de caracteres (todas las generaciones)", avg_len_rounded])
     ws.append(["Promedio tiempo de generación (s)", avg_sec])
+
+    last_table_row = 1 + n_users
+    summary_title_row = 3 + n_users
+    summary_last_row = summary_title_row + 3
+
+    # Cabecera tabla
+    for col in range(1, 7):
+        c = ws.cell(row=1, column=col)
+        c.font = header_font
+        c.fill = header_fill
+        c.alignment = align_center if col >= 3 else align_left
+        c.border = border_grid
+    ws.row_dimensions[1].height = 22
+
+    # Filas de datos (cebra)
+    for r in range(2, last_table_row + 1):
+        zebra = (r % 2 == 0)
+        for col in range(1, 7):
+            c = ws.cell(row=r, column=col)
+            c.border = border_grid
+            if zebra:
+                c.fill = zebra_fill
+            if col in (3, 4, 5):
+                c.alignment = align_right
+            else:
+                c.alignment = align_left
+
+    # Fila en blanco entre tabla y resumen: sin borde obligatorio
+    blank_row = last_table_row + 1
+    ws.row_dimensions[blank_row].height = 6
+
+    # Bloque resumen
+    for col in range(1, 3):
+        c = ws.cell(row=summary_title_row, column=col)
+        c.font = summary_title_font
+        c.fill = summary_title_fill
+        c.alignment = Alignment(horizontal="center", vertical="center")
+        c.border = border_grid
+    ws.merge_cells(f"A{summary_title_row}:B{summary_title_row}")
+    ws.cell(row=summary_title_row, column=1).alignment = Alignment(horizontal="center", vertical="center")
+    ws.row_dimensions[summary_title_row].height = 20
+
+    for r in range(summary_title_row + 1, summary_last_row + 1):
+        for col in range(1, 3):
+            c = ws.cell(row=r, column=col)
+            c.border = border_grid
+            c.alignment = align_left if col == 1 else align_right
+            c.fill = summary_label_fill if col == 1 else summary_value_fill
+        ws.row_dimensions[r].height = 18
+
+    ws.freeze_panes = "A2"
+    for col_idx in range(1, 7):
+        letter = get_column_letter(col_idx)
+        scan_end = summary_last_row if col_idx <= 2 else last_table_row
+        max_len = 0
+        for row_idx in range(1, scan_end + 1):
+            cell = ws.cell(row=row_idx, column=col_idx)
+            if cell.value is None:
+                continue
+            max_len = max(max_len, len(str(cell.value)))
+        ws.column_dimensions[letter].width = min(max(max_len + 2.2, 10), 52)
+
     buf = BytesIO()
     wb.save(buf)
     buf.seek(0)
