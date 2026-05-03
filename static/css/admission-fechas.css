@@ -1,7 +1,8 @@
+/* ── Fechas main ── */
 .fechas-main {
   flex: 1 1 auto;
   min-height: 0;
-  background: linear-gradient(180deg, #e8eef5 0%, #f1f5f9 32%, #f8fafc 100%);
+  background: linear-gradient(180deg, #eef2ff 0%, #f0f4f8 32%, #f8fafc 100%);
 }
 
 .fechas-page-inner {
@@ -27,15 +28,16 @@
   max-width: 42rem;
   color: #64748b;
   font-size: 0.98rem;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
+/* ── Controls card ── */
 .fechas-controls-card {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 1.35rem 1.35rem 1.25rem;
-  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
   margin-bottom: 1.25rem;
 }
 
@@ -71,7 +73,7 @@
   .fechas-controls-filters {
     border-top: none;
     padding-top: 0;
-    border-left: 1px solid #f1f5f9;
+    border-left: 1px solid #e5e7eb;
     padding-left: 1.35rem;
   }
 }
@@ -97,25 +99,34 @@
 
 .btn-create-register {
   border-radius: 12px;
-  padding: 0.65rem 1.25rem;
-  font-weight: 600;
-  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.28);
+  padding: 0.7rem 1.25rem;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.25);
+  font-size: 0.95rem;
 }
 
+/* ── Search pill ── */
 .search-pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #dbe1ea;
+  border: 1.5px solid #d1d5db;
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 10px 16px;
   background: #fff;
   min-width: 360px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-pill:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .search-icon {
   font-size: 0.95rem;
+  color: #6b7280;
 }
 
 .search-input {
@@ -137,6 +148,7 @@
   color: #475569;
 }
 
+/* ── Date picker ── */
 .date-pick-wrapper {
   min-width: 220px;
 }
@@ -145,6 +157,7 @@
   border-radius: 10px;
 }
 
+/* ── Quick filters ── */
 .quick-filters {
   display: flex;
   align-items: center;
@@ -154,18 +167,27 @@
 
 .quick-filters-label {
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   margin-right: 0.25rem;
+  color: #64748b;
+}
+
+.quick-filter-btn {
+  border-radius: 999px;
+  font-size: 0.82rem;
+  padding: 0.3rem 0.8rem;
 }
 
 .quick-filter-btn.active {
-  background: #0d6efd;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
   color: #fff;
-  border-color: #0d6efd;
+  border-color: #4f46e5;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
 }
 
+/* ── Records summary ── */
 .records-summary-wrap {
   margin-bottom: 1.25rem;
 }
@@ -180,13 +202,13 @@
 .summary-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 999px;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: #334155;
   background: #fff;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .summary-pill strong {
@@ -211,6 +233,7 @@
   color: #166534;
 }
 
+/* ── List panel ── */
 .list-panel {
   display: flex;
   flex-direction: column;
@@ -218,7 +241,7 @@
 }
 
 .fechas-section-title {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -226,12 +249,14 @@
   margin: 0.25rem 0 0;
 }
 
+/* ── Records grid ── */
 .records-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
 }
 
+/* ── Record card ── */
 .record-card {
   display: flex;
   flex-direction: column;
@@ -241,8 +266,8 @@
   color: #1f2937;
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 1.1rem 1.15rem 0.85rem;
+  border-radius: 16px;
+  padding: 1.15rem 1.2rem 0.9rem;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   width: 100%;
@@ -250,9 +275,9 @@
 }
 
 .record-card:hover {
-  border-color: #93c5fd;
-  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12);
-  transform: translateY(-2px);
+  border-color: #a5b4fc;
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.12);
+  transform: translateY(-3px);
 }
 
 .record-folder-btn {
@@ -262,8 +287,8 @@
 
 .record-folder-btn:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .record-card-top {
@@ -279,9 +304,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%);
-  color: #1d4ed8;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #eef2ff 0%, #dbeafe 100%);
+  color: #4f46e5;
   font-size: 1.4rem;
   flex-shrink: 0;
 }
@@ -292,7 +317,7 @@
 }
 
 .record-date {
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -305,6 +330,7 @@
   font-size: 0.88rem;
 }
 
+/* ── Record progress ── */
 .record-progress-block {
   margin-bottom: 0.85rem;
 }
@@ -324,20 +350,20 @@
 }
 
 .record-progress-stat--ok {
-  color: #166534;
+  color: #059669;
 }
 
 .record-progress-stat--pend {
-  color: #b45309;
+  color: #d97706;
 }
 
 .record-progress-track {
   display: flex;
   width: 100%;
-  height: 9px;
+  height: 8px;
   border-radius: 999px;
   overflow: hidden;
-  background: #e2e8f0;
+  background: #e5e7eb;
 }
 
 .record-progress-seg {
@@ -347,13 +373,14 @@
 }
 
 .record-progress-seg--rec {
-  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(90deg, #059669 0%, #34d399 100%);
 }
 
 .record-progress-seg--pend {
-  background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
 }
 
+/* ── Record meta ── */
 .record-meta {
   display: flex;
   flex-wrap: wrap;
@@ -370,7 +397,7 @@
   border-top: 1px solid #f1f5f9;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: #6366f1;
 }
 
 .record-open-label {
@@ -378,16 +405,17 @@
 }
 
 .record-open-icon {
-  color: #94a3b8;
+  color: #a5b4fc;
   font-size: 1.05rem;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .record-card:hover .record-open-icon {
-  color: #2563eb;
+  color: #4f46e5;
   transform: translateX(4px);
 }
 
+/* ── Meta badges ── */
 .meta-badge {
   font-size: 0.75rem;
   border-radius: 999px;
@@ -410,10 +438,11 @@
   color: #166534;
 }
 
+/* ── Empty state ── */
 .empty-state {
-  border: 1px dashed #cbd5e1;
-  border-radius: 14px;
-  padding: 2rem 1.5rem;
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 2.5rem 1.5rem;
   text-align: center;
   color: #64748b;
   background: #fff;
@@ -421,20 +450,21 @@
 }
 
 .empty-state-icon {
-  font-size: 2rem;
-  color: #cbd5e1;
+  font-size: 2.5rem;
+  color: #a5b4fc;
   display: block;
   margin-bottom: 0.75rem;
 }
 
+/* ── Register modal ── */
 .register-modal .modal-content {
-  border-radius: 16px;
-  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.2);
 }
 
 .register-modal .modal-header {
   border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
 }
 
 .modal-subtitle {
@@ -444,6 +474,7 @@
 
 .register-modal .modal-record-filters {
   background: #f8fafc;
+  border-radius: 12px;
 }
 
 .register-modal .modal-record-filters .form-label {
@@ -460,6 +491,7 @@
 
 .register-modal .modal-footer {
   border-top: 1px solid #e5e7eb;
+  background: #fafbfc;
 }
 
 .register-modal .modal-dialog {
@@ -487,30 +519,32 @@
 }
 
 #modalRecordsTable .btn-status-pendiente {
-  background-color: #e3f2fd;
-  color: #0d6efd;
-  border: 1px solid #0d6efd;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
   border-radius: 20px;
   padding: 2px 12px;
   font-weight: 600;
 }
 
 #modalRecordsTable .btn-status-recibido {
-  background-color: #d1e7dd;
-  color: #0f5132;
-  border: 1px solid #0f5132;
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
   border-radius: 20px;
   padding: 2px 12px;
   font-weight: 600;
 }
 
+/* ── Toasts ── */
 .admission-toast {
   min-width: 320px;
   border: 0;
-  border-left: 5px solid #198754;
-  border-radius: 12px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+  border-left: 5px solid #059669;
+  border-radius: 14px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  backdrop-filter: blur(8px);
 }
 
 .admission-toast.warning {
@@ -518,7 +552,7 @@
 }
 
 .admission-toast.danger {
-  border-left-color: #dc3545;
+  border-left-color: #ef4444;
 }
 
 .admission-toast .toast-progress {
@@ -528,15 +562,15 @@
 }
 
 .admission-toast.success .toast-progress {
-  background: #198754;
+  background: linear-gradient(90deg, #059669 0%, #34d399 100%);
 }
 
 .admission-toast.warning .toast-progress {
-  background: #f59e0b;
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
 }
 
 .admission-toast.danger .toast-progress {
-  background: #dc3545;
+  background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
 }
 
 @keyframes toastCountdown {
@@ -548,6 +582,7 @@
   }
 }
 
+/* ── Responsive ── */
 @media (max-width: 767.98px) {
   .fechas-page-inner {
     padding: 1rem 0.9rem 5.2rem;
@@ -563,7 +598,7 @@
 
   .fechas-controls-card {
     padding: 1rem;
-    border-radius: 12px;
+    border-radius: 14px;
   }
 
   .search-pill {
@@ -634,4 +669,3 @@
     width: min(420px, calc(100vw - 1rem));
   }
 }
-

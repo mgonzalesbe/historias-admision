@@ -1,24 +1,87 @@
+/* ── Auth pages: gradient background ── */
+body:has(.login-card),
+body:has(.register-card),
+body:has(.security-card) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6366f1 100%);
+  min-height: 100vh;
+}
+
+/* ── Auth cards ── */
 .login-card,
 .register-card {
   border: none;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  animation: authCardSlideIn 0.5s ease-out;
 }
 
-.form-control:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+@keyframes authCardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
+.login-card h3,
+.register-card h3 {
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.login-card h3 i,
+.register-card h3 i {
+  color: #6366f1;
+}
+
+.login-card .btn-dark,
+.login-card .btn-primary {
+  padding: 0.65rem 1rem;
+  font-size: 0.95rem;
+}
+
+/* ── Security card (forgot/reset/change password) ── */
+.security-card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  animation: authCardSlideIn 0.5s ease-out;
+}
+
+.security-card .card-header {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #fff;
+  border-radius: 0;
+  border-bottom: none;
+  padding: 1.2rem 1.5rem;
+}
+
+.security-card .card-header h4 {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+/* ── Password strength ── */
 .password-strength .progress {
-  height: 0.55rem;
+  height: 0.5rem;
   border-radius: 999px;
-  background-color: #e9ecef;
+  background-color: #e5e7eb;
+  overflow: hidden;
 }
 
 .password-strength-text {
   display: inline-block;
   margin-top: 0.35rem;
+  font-weight: 600;
 }
 
 .password-rules {
@@ -26,36 +89,25 @@
 }
 
 .password-rules li {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
+  transition: color 0.2s ease;
 }
 
 .password-rules li.rule-ok {
-  color: #198754;
+  color: #059669;
   font-weight: 600;
 }
 
 .progress-bar.strength-fragil {
-  background: linear-gradient(90deg, #dc3545 0%, #ef5350 100%);
+  background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
 }
 
 .progress-bar.strength-regular {
-  background: linear-gradient(90deg, #f59e0b 0%, #facc15 100%);
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
 }
 
 .progress-bar.strength-fuerte {
-  background: linear-gradient(90deg, #198754 0%, #20c997 100%);
-}
-
-.security-card {
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(13, 110, 253, 0.12);
-}
-
-.security-card .card-header {
-  background: linear-gradient(90deg, #0d6efd 0%, #2563eb 100%);
-  color: #fff;
-  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, #059669 0%, #34d399 100%);
 }
 
 .password-rules.compact {
@@ -65,10 +117,24 @@
 
 .password-suggestions .btn-link {
   text-decoration: none;
+  color: #6366f1;
 }
 
 .password-suggestions .form-range {
   margin-top: 0.45rem;
   margin-bottom: 0.2rem;
+  accent-color: #6366f1;
 }
 
+/* ── Password panel (within modals) ── */
+.password-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fafbff 0%, #f5f3ff 100%);
+  padding: 1rem;
+}
+
+/* ── Token invalid page ── */
+body:has(.token-invalid-card) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6366f1 100%);
+}
