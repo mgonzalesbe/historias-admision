@@ -275,7 +275,7 @@
   }
 
   function setInsight(text) {
-    insightEl.textContent = text;
+    if (insightEl) insightEl.textContent = text;
   }
 
   function renderGenerated(filtered) {
