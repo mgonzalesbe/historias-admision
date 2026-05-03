@@ -46,31 +46,35 @@
           </div>
           <div class="row g-4 mb-4">
             <div class="col-md-4">
-              <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                  <i
-                    class="bi bi-file-earmark-medical text-primary fs-1 mb-3"
-                  ></i>
-                  <h3>{{ cantidades.total_historias }}</h3>
-                  <p class="text-muted">Total Historias</p>
+              <div class="card h-100" style="border-left: 4px solid #6366f1; border-radius: 16px;">
+                <div class="card-body text-center py-4">
+                  <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);display:inline-flex;align-items:center;justify-content:center;margin-bottom:0.75rem">
+                    <i class="bi bi-file-earmark-medical" style="font-size:1.5rem;color:#4f46e5"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1">{{ cantidades.total_historias }}</h3>
+                  <p class="text-muted small mb-0">Total Historias</p>
                 </div>
               </div>
             </div>
             <div class="col-md-4">
-              <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                  <i class="bi bi-clock text-warning fs-1 mb-3"></i>
-                  <h3>{{ cantidades.pendientes }}</h3>
-                  <p class="text-muted">Pendientes</p>
+              <div class="card h-100" style="border-left: 4px solid #f59e0b; border-radius: 16px;">
+                <div class="card-body text-center py-4">
+                  <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#fffbeb,#fef3c7);display:inline-flex;align-items:center;justify-content:center;margin-bottom:0.75rem">
+                    <i class="bi bi-clock" style="font-size:1.5rem;color:#d97706"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1">{{ cantidades.pendientes }}</h3>
+                  <p class="text-muted small mb-0">Pendientes</p>
                 </div>
               </div>
             </div>
             <div class="col-md-4">
-              <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                  <i class="bi bi-check-circle text-success fs-1 mb-3"></i>
-                  <h3>{{ cantidades.recibidas }}</h3>
-                  <p class="text-muted">Recibidas</p>
+              <div class="card h-100" style="border-left: 4px solid #10b981; border-radius: 16px;">
+                <div class="card-body text-center py-4">
+                  <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:inline-flex;align-items:center;justify-content:center;margin-bottom:0.75rem">
+                    <i class="bi bi-check-circle" style="font-size:1.5rem;color:#059669"></i>
+                  </div>
+                  <h3 class="fw-bold mb-1">{{ cantidades.recibidas }}</h3>
+                  <p class="text-muted small mb-0">Recibidas</p>
                 </div>
               </div>
             </div>
