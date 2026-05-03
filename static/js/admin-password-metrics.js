@@ -339,13 +339,19 @@
       },
       true
     );
+    var distRounded = dist.values.map(function (v) {
+      return Math.round(v);
+    });
+    var dailyRounded = dailyAvg.values.map(function (v) {
+      return Math.round(v);
+    });
 
     destroyCharts();
     chartOne = createChart(
       chartOneCanvas,
       "pie",
       dist.labels,
-      dist.values,
+      distRounded,
       "Longitud promedio por usuario",
       "#8b5cf6"
     );
@@ -353,7 +359,7 @@
       chartTwoCanvas,
       "line",
       dailyAvg.labels,
-      dailyAvg.values,
+      dailyRounded,
       "Promedio",
       "#a855f7"
     );
@@ -365,7 +371,7 @@
       : 0;
     setInsight(
       filtered.length
-        ? "La longitud promedio del periodo es " + avg.toFixed(1) + " caracteres."
+        ? "La longitud promedio del periodo es " + Math.round(avg) + " caracteres."
         : "No hay datos de longitud para el rango seleccionado."
     );
   }
