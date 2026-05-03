@@ -3,7 +3,10 @@ function copyLink() {
   if (!input) return;
 
   navigator.clipboard.writeText(input.value).then(() => {
-    alert("Enlace copiado al portapapeles");
+    var toastEl = document.getElementById("copyToast");
+    if (toastEl) {
+      new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+    }
   });
 }
 
