@@ -267,6 +267,7 @@ a {
 .app-shell-body {
   flex: 1 1 auto;
   min-height: 0;
+  background-color: #f0f4f8;
 }
 
 /* ── Tables ── */
