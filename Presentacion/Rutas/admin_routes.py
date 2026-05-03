@@ -1,6 +1,9 @@
 import re
 import time
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
+from io import BytesIO
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify, send_file
+from openpyxl import Workbook
+from openpyxl.styles import Font
 from Aplicacion.Servicios.HistoriaService import HistoriaService
 from Aplicacion.Servicios.AuthService import AuthService
 from Aplicacion.Servicios.TokenService import TokenService
@@ -23,6 +26,53 @@ import logging
 import pyodbc
 
 _logger = logging.getLogger(__name__)
+
+
+def _build_password_metrics_xlsx(per_user, summary):
+    """Genera un .xlsx con la tabla por usuario y un bloque de resumen global."""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Métricas por usuario"
+    headers = [
+        "Usuario",
+        "Nombre",
+        "Contraseñas generadas",
+        "Caracteres (última contraseña)",
+        "Tiempo de generación último (s)",
+        "Último registro",
+    ]
+    ws.append(headers)
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+    for item in per_user:
+        last_at = item.get("last_metric_at")
+        last_at_str = last_at.strftime("%d/%m/%Y %H:%M") if last_at else "-"
+        ws.append(
+            [
+                item.get("username") or "",
+                item.get("nombre_completo") or "",
+                int(item.get("passwords_generated") or 0),
+                int(item.get("last_password_length") or 0),
+                round((int(item.get("last_generation_ms") or 0)) / 1000.0, 2),
+                last_at_str,
+            ]
+        )
+    ws.append([])
+    ws.append(["Resumen"])
+    for cell in ws[ws.max_row]:
+        cell.font = Font(bold=True)
+    total_pw = int(summary.get("total_passwords") or 0)
+    avg_len = float(summary.get("avg_length") or 0.0)
+    avg_len_rounded = int(avg_len + 0.5)
+    avg_sec = round(float(summary.get("avg_generation_ms") or 0.0) / 1000.0, 1)
+    ws.append(["Total contraseñas generadas", total_pw])
+    ws.append(["Promedio de caracteres (todas las generaciones)", avg_len_rounded])
+    ws.append(["Promedio tiempo de generación (s)", avg_sec])
+    buf = BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+    return buf
+
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 historia_service = HistoriaService()
@@ -356,6 +406,26 @@ def password_metrics():
         per_user=per_user,
         metrics=metrics,
         analytics_data=analytics_data,
+    )
+
+
+@admin_bp.route('/password-metrics/export')
+def password_metrics_export():
+    try:
+        summary = password_metric_repo.get_summary()
+        per_user = password_metric_repo.get_per_user()
+        per_user.sort(key=lambda item: int(item.get("usuario_id") or 0), reverse=True)
+        buf = _build_password_metrics_xlsx(per_user, summary)
+    except Exception as exc:
+        _logger.exception("Exportación métricas contraseña: %s", exc)
+        flash("No se pudo generar el archivo Excel. Intenta de nuevo.", "danger")
+        return redirect(url_for("admin.password_metrics"))
+    filename = f"metricas_contrasena_{datetime.now().strftime('%Y%m%d')}.xlsx"
+    return send_file(
+        buf,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        as_attachment=True,
+        download_name=filename,
     )
 
 
