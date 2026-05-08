@@ -442,6 +442,12 @@ def reset_password(token):
     if request.method == 'POST':
         new_password = request.form.get('new_password') or ''
         confirm_password = request.form.get('confirm_password') or ''
+        generation_time_ms_raw = (request.form.get('generation_time_ms') or '0').strip()
+
+        try:
+            generation_time_ms = max(int(generation_time_ms_raw), 0)
+        except ValueError:
+            generation_time_ms = 0
 
         policy_error = _password_policy_error(new_password)
         if policy_error:
@@ -463,6 +469,19 @@ def reset_password(token):
             return render_template(
                 'auth/reset_password.html',
                 **_password_page_context(error=f'No se pudo actualizar la contraseña: {exc}'),
+            )
+
+        try:
+            password_metric_repo.create(
+                usuario_id=token_info["usuario_id"],
+                password_length=len(new_password),
+                generation_time_ms=generation_time_ms,
+                strength_label=_password_strength_label(new_password),
+            )
+        except Exception:
+            _logger.exception(
+                "auth.reset_password: no se pudo registrar métrica de contraseña user_id=%s",
+                token_info.get("usuario_id"),
             )
 
         return render_template(

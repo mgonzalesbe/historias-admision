@@ -53,6 +53,8 @@
     var text = form.querySelector("[data-strength-text]");
     var matchHint = form.querySelector("[data-password-match]");
     var toggles = form.querySelectorAll("[data-toggle-password]");
+    var generationField = form.querySelector("[data-generation-time-ms]");
+    var startAtMs = 0;
 
     if (!newInput) {
       return;
@@ -99,9 +101,27 @@
       });
     });
 
-    newInput.addEventListener("input", refresh);
+    newInput.addEventListener("input", function () {
+      if (!startAtMs && newInput.value.length > 0) {
+        startAtMs = Date.now();
+      }
+      if (newInput.value.length === 0) {
+        startAtMs = 0;
+        if (generationField) generationField.value = "0";
+      }
+      refresh();
+    });
     if (confirmInput) {
       confirmInput.addEventListener("input", refresh);
+    }
+    if (generationField) {
+      form.addEventListener("submit", function () {
+        if (newInput.value && startAtMs) {
+          generationField.value = String(Math.max(Date.now() - startAtMs, 0));
+        } else {
+          generationField.value = "0";
+        }
+      });
     }
     refresh();
   });
