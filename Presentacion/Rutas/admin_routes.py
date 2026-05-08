@@ -367,6 +367,12 @@ def editar_usuario(usuario_id: int):
     role = (request.form.get('role') or '').strip()
     activo_raw = (request.form.get('activo') or '').strip().lower()
     activo = activo_raw in ('1', 'true', 'on', 'si', 'sí')
+    generation_time_ms_raw = (request.form.get('generation_time_ms') or '0').strip()
+
+    try:
+        generation_time_ms = max(int(generation_time_ms_raw), 0)
+    except ValueError:
+        generation_time_ms = 0
 
     if not username or not nombre_completo or not email:
         flash('Completa los campos obligatorios del usuario, incluido el correo.', 'danger')
@@ -393,6 +399,7 @@ def editar_usuario(usuario_id: int):
         flash('El correo electrónico ya está registrado.', 'warning')
         return redirect(url_for('admin.usuarios'))
 
+    password_changed = False
     try:
         password_hash = usuario_actual.password_hash
         if password:
@@ -401,6 +408,7 @@ def editar_usuario(usuario_id: int):
                 flash(policy_error, 'danger')
                 return redirect(url_for('admin.usuarios'))
             password_hash = auth_service.hash_password(password)
+            password_changed = True
 
         usuario_actualizado = Usuario(
             id=usuario_actual.id,
@@ -416,6 +424,21 @@ def editar_usuario(usuario_id: int):
         flash('Usuario actualizado correctamente.', 'success')
     except pyodbc.Error:
         flash('No se pudo actualizar el usuario.', 'danger')
+        return redirect(url_for('admin.usuarios'))
+
+    if password_changed:
+        try:
+            password_metric_repo.create(
+                usuario_id=usuario_id,
+                password_length=len(password),
+                generation_time_ms=generation_time_ms,
+                strength_label=_password_strength_label(password),
+            )
+        except Exception:
+            _logger.exception(
+                "admin.editar_usuario: no se pudo registrar métrica de contraseña user_id=%s",
+                usuario_id,
+            )
 
     return redirect(url_for('admin.usuarios'))
 

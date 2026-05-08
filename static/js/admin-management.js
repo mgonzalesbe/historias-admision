@@ -322,11 +322,40 @@
     refreshPasswordLock();
   }
 
+  function initEditUserGenerationTimer() {
+    document.querySelectorAll("form[data-edit-user-form]").forEach((form) => {
+      const passwordInput = form.querySelector("[data-edit-user-password]");
+      const generationField = form.querySelector("[data-edit-user-generation-time]");
+      if (!passwordInput || !generationField) return;
+
+      let startAtMs = 0;
+
+      passwordInput.addEventListener("input", () => {
+        if (!startAtMs && passwordInput.value.length > 0) {
+          startAtMs = Date.now();
+        }
+        if (passwordInput.value.length === 0) {
+          startAtMs = 0;
+          generationField.value = "0";
+        }
+      });
+
+      form.addEventListener("submit", () => {
+        if (passwordInput.value && startAtMs) {
+          generationField.value = String(Math.max(Date.now() - startAtMs, 0));
+        } else {
+          generationField.value = "0";
+        }
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initTableSearch();
     initToasts();
     initConfirmModal();
     initAdminCreateUserPasswordLock();
+    initEditUserGenerationTimer();
   });
 })();
 

@@ -211,7 +211,7 @@
     {% for user in usuarios %}
     <div class="modal fade" id="editUsuarioModal{{ user.id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <form class="modal-content" method="POST" action="{{ url_for('admin.editar_usuario', usuario_id=user.id) }}">
+            <form class="modal-content" method="POST" action="{{ url_for('admin.editar_usuario', usuario_id=user.id) }}" data-edit-user-form>
                 <div class="modal-header">
                     <h5 class="modal-title">Editar Usuario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -227,7 +227,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Contraseña nueva (opcional)</label>
-                        <input type="password" class="form-control" name="password" placeholder="Deja vacío para mantener la actual">
+                        <input type="password" class="form-control" name="password" placeholder="Deja vacío para mantener la actual" data-edit-user-password>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Correo electrónico</label>
@@ -247,6 +247,7 @@
                             <option value="0" {% if not user.activo %}selected{% endif %}>Inactivo</option>
                         </select>
                     </div>
+                    <input type="hidden" name="generation_time_ms" value="0" data-edit-user-generation-time>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
