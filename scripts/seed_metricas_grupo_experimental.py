@@ -30,38 +30,45 @@ except ImportError:
 
 from Persistencia.Conexion.DatabaseConnection import DatabaseConnection
 
-# Grupo experimental (GE): tiempo (s), caracteres, cantidad generada
+# Cuadro de tesis (GE) por fila N° 1..30.
+# En el cuadro el orden de indicadores es: I1, I2, I3.
+# En la app el orden de columnas es al revés: I3, I2, I1.
+#
+#   Cuadro (GE)              →  Columna en la app
+#   I1 tiempo (segundos)     →  Tiempo de generación (último)
+#   I2 caracteres            →  Caracteres (última contraseña)
+#   I3 cantidad              →  Contraseñas generadas
 GE_DATA = [
-    (14.66, 11, 3),
-    (22.4, 10, 1),
-    (9.1, 10, 2),
-    (18.4, 12, 3),
-    (11.52, 12, 4),
-    (6.07, 11, 2),
-    (14.35, 10, 1),
-    (9.45, 10, 3),
-    (9.55, 12, 1),
-    (15.67, 12, 2),
-    (9.28, 10, 4),
-    (14.48, 10, 3),
-    (16.58, 12, 1),
-    (11.49, 12, 4),
-    (15.84, 12, 4),
-    (9.2, 10, 3),
-    (12.78, 10, 2),
-    (23.12, 13, 1),
-    (11.81, 10, 2),
-    (28.34, 12, 4),
-    (16.21, 12, 1),
-    (24.79, 10, 3),
-    (6.91, 12, 1),
-    (6.76, 10, 3),
-    (12.69, 10, 3),
-    (6.93, 13, 1),
-    (24.6, 12, 3),
-    (26.45, 10, 2),
-    (19.09, 12, 4),
-    (13.77, 10, 4),
+    {"i1_tiempo_s": 14.66, "i2_caracteres": 11, "i3_cantidad": 3},
+    {"i1_tiempo_s": 22.4, "i2_caracteres": 10, "i3_cantidad": 1},
+    {"i1_tiempo_s": 9.1, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 18.4, "i2_caracteres": 12, "i3_cantidad": 3},
+    {"i1_tiempo_s": 11.52, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 6.07, "i2_caracteres": 11, "i3_cantidad": 2},
+    {"i1_tiempo_s": 14.35, "i2_caracteres": 10, "i3_cantidad": 1},
+    {"i1_tiempo_s": 9.45, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 9.55, "i2_caracteres": 12, "i3_cantidad": 1},
+    {"i1_tiempo_s": 15.67, "i2_caracteres": 12, "i3_cantidad": 2},
+    {"i1_tiempo_s": 9.28, "i2_caracteres": 10, "i3_cantidad": 4},
+    {"i1_tiempo_s": 14.48, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 16.58, "i2_caracteres": 12, "i3_cantidad": 1},
+    {"i1_tiempo_s": 11.49, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 15.84, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 9.2, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 12.78, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 23.12, "i2_caracteres": 13, "i3_cantidad": 1},
+    {"i1_tiempo_s": 11.81, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 28.34, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 16.21, "i2_caracteres": 12, "i3_cantidad": 1},
+    {"i1_tiempo_s": 24.79, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 6.91, "i2_caracteres": 12, "i3_cantidad": 1},
+    {"i1_tiempo_s": 6.76, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 12.69, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 6.93, "i2_caracteres": 13, "i3_cantidad": 1},
+    {"i1_tiempo_s": 24.6, "i2_caracteres": 12, "i3_cantidad": 3},
+    {"i1_tiempo_s": 26.45, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 19.09, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 13.77, "i2_caracteres": 10, "i3_cantidad": 4},
 ]
 
 
@@ -175,7 +182,7 @@ def main() -> int:
 
     for idx, user in enumerate(users):
         user_id, username, nombre, rol = user
-        time_s, length, count = GE_DATA[idx]
+        ge = GE_DATA[idx]
         plan.append(
             {
                 "ge_row": idx + 1,
@@ -183,20 +190,26 @@ def main() -> int:
                 "username": username,
                 "nombre": nombre,
                 "rol": rol,
-                "time_s": time_s,
-                "length": length,
-                "count": count,
+                "time_s": ge["i1_tiempo_s"],
+                "length": ge["i2_caracteres"],
+                "count": ge["i3_cantidad"],
             }
         )
 
-    print("\nPlan de asignación (GE -> usuario):\n")
-    print(f"{'GE':>3}  {'Usuario':<18} {'Nombre':<28} {'#Pwd':>4} {'Chars':>5} {'Tiempo':>7}")
-    print("-" * 78)
+    print("\nMapeo cuadro GE -> columnas de la app (orden de la tabla web):\n")
+    print("  I3 cantidad (cuadro)  ->  Contraseñas generadas")
+    print("  I2 caracteres (cuadro) ->  Caracteres (última contraseña)")
+    print("  I1 tiempo (cuadro)    ->  Tiempo de generación (último)\n")
+
+    print("Plan de asignación (fila GE N° -> usuario, columnas como en la app):\n")
+    print(
+        f"{'GE':>3}  {'Usuario':<16} {'Contraseñas':>12} {'Caracteres':>11} {'Tiempo':>8}"
+    )
+    print("-" * 58)
     for row in plan:
         print(
-            f"{row['ge_row']:>3}  {row['username']:<18} "
-            f"{(row['nombre'] or '')[:28]:<28} {row['count']:>4} "
-            f"{row['length']:>5} {row['time_s']:>6.2f}s"
+            f"{row['ge_row']:>3}  {row['username']:<16} {row['count']:>12} "
+            f"{row['length']:>11} {row['time_s']:>7.2f}s"
         )
 
     if args.dry_run:
