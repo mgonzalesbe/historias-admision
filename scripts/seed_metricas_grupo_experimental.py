@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import random
 import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -39,64 +40,54 @@ from Persistencia.Conexion.DatabaseConnection import DatabaseConnection
 #   I2 caracteres            →  Caracteres (última contraseña)
 #   I3 cantidad              →  Contraseñas generadas
 GE_DATA = [
-    {"i1_tiempo_s": 14.66, "i2_caracteres": 11, "i3_cantidad": 3},
-    {"i1_tiempo_s": 22.4, "i2_caracteres": 10, "i3_cantidad": 1},
-    {"i1_tiempo_s": 9.1, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 14.66, "i2_caracteres": 9, "i3_cantidad": 3},
+    {"i1_tiempo_s": 22.4, "i2_caracteres": 9, "i3_cantidad": 1},
+    {"i1_tiempo_s": 9.1, "i2_caracteres": 9, "i3_cantidad": 2},
     {"i1_tiempo_s": 18.4, "i2_caracteres": 12, "i3_cantidad": 3},
     {"i1_tiempo_s": 11.52, "i2_caracteres": 12, "i3_cantidad": 4},
-    {"i1_tiempo_s": 6.07, "i2_caracteres": 11, "i3_cantidad": 2},
-    {"i1_tiempo_s": 14.35, "i2_caracteres": 10, "i3_cantidad": 1},
-    {"i1_tiempo_s": 9.45, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 6.07, "i2_caracteres": 9, "i3_cantidad": 2},
+    {"i1_tiempo_s": 14.35, "i2_caracteres": 9, "i3_cantidad": 1},
+    {"i1_tiempo_s": 9.45, "i2_caracteres": 9, "i3_cantidad": 3},
     {"i1_tiempo_s": 9.55, "i2_caracteres": 12, "i3_cantidad": 1},
     {"i1_tiempo_s": 15.67, "i2_caracteres": 12, "i3_cantidad": 2},
-    {"i1_tiempo_s": 9.28, "i2_caracteres": 10, "i3_cantidad": 4},
-    {"i1_tiempo_s": 14.48, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 9.28, "i2_caracteres": 9, "i3_cantidad": 4},
+    {"i1_tiempo_s": 14.48, "i2_caracteres": 9, "i3_cantidad": 3},
     {"i1_tiempo_s": 16.58, "i2_caracteres": 12, "i3_cantidad": 1},
     {"i1_tiempo_s": 11.49, "i2_caracteres": 12, "i3_cantidad": 4},
     {"i1_tiempo_s": 15.84, "i2_caracteres": 12, "i3_cantidad": 4},
-    {"i1_tiempo_s": 9.2, "i2_caracteres": 10, "i3_cantidad": 3},
-    {"i1_tiempo_s": 12.78, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 9.2, "i2_caracteres": 9, "i3_cantidad": 3},
+    {"i1_tiempo_s": 12.78, "i2_caracteres": 9, "i3_cantidad": 2},
     {"i1_tiempo_s": 23.12, "i2_caracteres": 13, "i3_cantidad": 1},
-    {"i1_tiempo_s": 11.81, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 11.81, "i2_caracteres": 9, "i3_cantidad": 2},
     {"i1_tiempo_s": 28.34, "i2_caracteres": 12, "i3_cantidad": 4},
     {"i1_tiempo_s": 16.21, "i2_caracteres": 12, "i3_cantidad": 1},
-    {"i1_tiempo_s": 24.79, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 24.79, "i2_caracteres": 9, "i3_cantidad": 3},
     {"i1_tiempo_s": 6.91, "i2_caracteres": 12, "i3_cantidad": 1},
-    {"i1_tiempo_s": 6.76, "i2_caracteres": 10, "i3_cantidad": 3},
-    {"i1_tiempo_s": 12.69, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 6.76, "i2_caracteres": 9, "i3_cantidad": 3},
+    {"i1_tiempo_s": 12.69, "i2_caracteres": 9, "i3_cantidad": 3},
     {"i1_tiempo_s": 6.93, "i2_caracteres": 13, "i3_cantidad": 1},
     {"i1_tiempo_s": 24.6, "i2_caracteres": 12, "i3_cantidad": 3},
-    {"i1_tiempo_s": 26.45, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 26.45, "i2_caracteres": 9, "i3_cantidad": 2},
     {"i1_tiempo_s": 19.09, "i2_caracteres": 12, "i3_cantidad": 4},
-    {"i1_tiempo_s": 13.77, "i2_caracteres": 10, "i3_cantidad": 4},
+    {"i1_tiempo_s": 13.77, "i2_caracteres": 9, "i3_cantidad": 4},
 ]
 
-# 15 días con actividad repartidos en una ventana de 30 (el resto queda sin registros).
-WINDOW_DAYS = 30
+# 15 días con actividad dentro de los últimos 35 (el resto sin registros).
+WINDOW_DAYS = 35
 ACTIVE_DAYS = 15
-ACTIVE_DAY_OFFSETS = [
-    1,
-    3,
-    5,
-    7,
-    9,
-    11,
-    13,
-    16,
-    18,
-    20,
-    22,
-    24,
-    26,
-    28,
-    29,
-]
+RANDOM_SEED = 2026
+ACTIVE_DAY_OFFSETS: list[int] = []
+
+
+def build_active_day_offsets() -> list[int]:
+    rng = random.Random(RANDOM_SEED)
+    return sorted(rng.sample(range(1, WINDOW_DAYS + 1), ACTIVE_DAYS))
 
 
 def strength_label_for_length(length: int) -> str:
     if length >= 12:
         return "Fuerte"
-    if length >= 10:
+    if length >= 9:
         return "Regular"
     return "Fragil"
 
@@ -125,38 +116,28 @@ def delete_metrics_for_users(cursor, user_ids: list[int]) -> int:
 
 
 def build_metric_timestamps(user_index: int, password_count: int, end_utc: datetime) -> list[datetime]:
-    """Reparte cada registro en días distintos (15 activos / 30) con horas distintas."""
+    """Fechas aleatorias en 15 días activos dentro de los últimos 35."""
     if password_count <= 0:
         return []
 
+    rng = random.Random(RANDOM_SEED + user_index * 997)
+    pool = ACTIVE_DAY_OFFSETS[:]
+    rng.shuffle(pool)
+
     offsets: list[int] = []
-    start = user_index % len(ACTIVE_DAY_OFFSETS)
     for i in range(password_count):
-        offsets.append(ACTIVE_DAY_OFFSETS[(start + i) % len(ACTIVE_DAY_OFFSETS)])
-
-    # Quitar duplicados conservando orden; si faltan, rellenar rotando.
-    unique_offsets: list[int] = []
-    for off in offsets:
-        if off not in unique_offsets:
-            unique_offsets.append(off)
-    cursor = (start + len(unique_offsets)) % len(ACTIVE_DAY_OFFSETS)
-    while len(unique_offsets) < password_count:
-        candidate = ACTIVE_DAY_OFFSETS[cursor]
-        if candidate not in unique_offsets:
-            unique_offsets.append(candidate)
-        cursor = (cursor + 1) % len(ACTIVE_DAY_OFFSETS)
-
-    unique_offsets.sort(reverse=True)  # más antiguo primero; el último insert = más reciente
+        offsets.append(rng.choice(pool if pool else ACTIVE_DAY_OFFSETS))
 
     timestamps: list[datetime] = []
-    for seq, days_ago in enumerate(unique_offsets):
-        hour = 13 + ((user_index + seq) % 6)
-        minute = (user_index * 9 + seq * 13) % 60
-        second = (user_index * 5 + seq * 7) % 60
+    for days_ago in offsets:
+        hour = rng.randint(8, 20)
+        minute = rng.randint(0, 59)
+        second = rng.randint(0, 59)
         timestamps.append(
-            end_utc
-            - timedelta(days=days_ago, hours=hour, minutes=minute, seconds=second)
+            end_utc - timedelta(days=days_ago, hours=hour, minutes=minute, seconds=second)
         )
+
+    timestamps.sort()
     return timestamps
 
 
@@ -198,6 +179,9 @@ def main() -> int:
         help="Incluir usuarios admin (por defecto se excluyen)",
     )
     args = parser.parse_args()
+
+    global ACTIVE_DAY_OFFSETS
+    ACTIVE_DAY_OFFSETS = build_active_day_offsets()
 
     db = DatabaseConnection.get_instance()
     conn = db.get_connection()
@@ -284,6 +268,7 @@ def main() -> int:
             key = ts.strftime("%Y-%m-%d")
             day_usage[key] = day_usage.get(key, 0) + 1
     print(f"\nDías con registros en el lote: {len(day_usage)} / {WINDOW_DAYS}")
+    print(f"Días activos usados: {', '.join(str(d) for d in ACTIVE_DAY_OFFSETS)}")
 
     if args.dry_run:
         print("\n[dry-run] No se modificó la base de datos.")
