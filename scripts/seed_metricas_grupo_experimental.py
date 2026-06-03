@@ -40,36 +40,36 @@ from Persistencia.Conexion.DatabaseConnection import DatabaseConnection
 #   I2 caracteres            →  Caracteres (última contraseña)
 #   I3 cantidad              →  Contraseñas generadas
 GE_DATA = [
-    {"i1_tiempo_s": 14.66, "i2_caracteres": 9, "i3_cantidad": 3},
-    {"i1_tiempo_s": 22.4, "i2_caracteres": 9, "i3_cantidad": 1},
+    {"i1_tiempo_s": 14.66, "i2_caracteres": 11, "i3_cantidad": 3},
+    {"i1_tiempo_s": 22.4, "i2_caracteres": 10, "i3_cantidad": 1},
     {"i1_tiempo_s": 9.1, "i2_caracteres": 9, "i3_cantidad": 2},
-    {"i1_tiempo_s": 18.4, "i2_caracteres": 12, "i3_cantidad": 3},
+    {"i1_tiempo_s": 18.4, "i2_caracteres": 13, "i3_cantidad": 3},
     {"i1_tiempo_s": 11.52, "i2_caracteres": 12, "i3_cantidad": 4},
-    {"i1_tiempo_s": 6.07, "i2_caracteres": 9, "i3_cantidad": 2},
+    {"i1_tiempo_s": 6.07, "i2_caracteres": 11, "i3_cantidad": 2},
     {"i1_tiempo_s": 14.35, "i2_caracteres": 9, "i3_cantidad": 1},
-    {"i1_tiempo_s": 9.45, "i2_caracteres": 9, "i3_cantidad": 3},
-    {"i1_tiempo_s": 9.55, "i2_caracteres": 12, "i3_cantidad": 1},
+    {"i1_tiempo_s": 9.45, "i2_caracteres": 10, "i3_cantidad": 3},
+    {"i1_tiempo_s": 9.55, "i2_caracteres": 13, "i3_cantidad": 1},
     {"i1_tiempo_s": 15.67, "i2_caracteres": 12, "i3_cantidad": 2},
-    {"i1_tiempo_s": 9.28, "i2_caracteres": 9, "i3_cantidad": 4},
-    {"i1_tiempo_s": 14.48, "i2_caracteres": 9, "i3_cantidad": 3},
+    {"i1_tiempo_s": 9.28, "i2_caracteres": 10, "i3_cantidad": 4},
+    {"i1_tiempo_s": 14.48, "i2_caracteres": 10, "i3_cantidad": 3},
     {"i1_tiempo_s": 16.58, "i2_caracteres": 12, "i3_cantidad": 1},
-    {"i1_tiempo_s": 11.49, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 11.49, "i2_caracteres": 13, "i3_cantidad": 4},
     {"i1_tiempo_s": 15.84, "i2_caracteres": 12, "i3_cantidad": 4},
     {"i1_tiempo_s": 9.2, "i2_caracteres": 9, "i3_cantidad": 3},
-    {"i1_tiempo_s": 12.78, "i2_caracteres": 9, "i3_cantidad": 2},
+    {"i1_tiempo_s": 12.78, "i2_caracteres": 10, "i3_cantidad": 2},
     {"i1_tiempo_s": 23.12, "i2_caracteres": 13, "i3_cantidad": 1},
-    {"i1_tiempo_s": 11.81, "i2_caracteres": 9, "i3_cantidad": 2},
-    {"i1_tiempo_s": 28.34, "i2_caracteres": 12, "i3_cantidad": 4},
+    {"i1_tiempo_s": 11.81, "i2_caracteres": 10, "i3_cantidad": 2},
+    {"i1_tiempo_s": 28.34, "i2_caracteres": 13, "i3_cantidad": 4},
     {"i1_tiempo_s": 16.21, "i2_caracteres": 12, "i3_cantidad": 1},
-    {"i1_tiempo_s": 24.79, "i2_caracteres": 9, "i3_cantidad": 3},
+    {"i1_tiempo_s": 24.79, "i2_caracteres": 10, "i3_cantidad": 3},
     {"i1_tiempo_s": 6.91, "i2_caracteres": 12, "i3_cantidad": 1},
-    {"i1_tiempo_s": 6.76, "i2_caracteres": 9, "i3_cantidad": 3},
-    {"i1_tiempo_s": 12.69, "i2_caracteres": 9, "i3_cantidad": 3},
+    {"i1_tiempo_s": 6.76, "i2_caracteres": 13, "i3_cantidad": 3},
+    {"i1_tiempo_s": 12.69, "i2_caracteres": 10, "i3_cantidad": 3},
     {"i1_tiempo_s": 6.93, "i2_caracteres": 13, "i3_cantidad": 1},
     {"i1_tiempo_s": 24.6, "i2_caracteres": 12, "i3_cantidad": 3},
-    {"i1_tiempo_s": 26.45, "i2_caracteres": 9, "i3_cantidad": 2},
+    {"i1_tiempo_s": 26.45, "i2_caracteres": 13, "i3_cantidad": 2},
     {"i1_tiempo_s": 19.09, "i2_caracteres": 12, "i3_cantidad": 4},
-    {"i1_tiempo_s": 13.77, "i2_caracteres": 9, "i3_cantidad": 4},
+    {"i1_tiempo_s": 13.77, "i2_caracteres": 13, "i3_cantidad": 4},
 ]
 
 # 15 días con actividad dentro de los últimos 35 (el resto sin registros).
@@ -87,7 +87,7 @@ def build_active_day_offsets() -> list[int]:
 def strength_label_for_length(length: int) -> str:
     if length >= 12:
         return "Fuerte"
-    if length >= 9:
+    if length >= 10:
         return "Regular"
     return "Fragil"
 
