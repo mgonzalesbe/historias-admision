@@ -78,7 +78,8 @@ def dashboard():
                            cantidades=cantidades,
                            porcentaje_recibidas=porcentaje_recibidas,
                            porcentaje_pendientes=porcentaje_pendientes,
-                           top_especialidades_chart=top_especialidades_chart)
+                           top_especialidades_chart=top_especialidades_chart,
+                           active_nav='dashboard')
 
 
 @admission_bp.route('/cambiar-password', methods=['GET', 'POST'])
@@ -95,30 +96,30 @@ def cambiar_password():
 
         if not current_password or not new_password or not confirm_password:
             flash('Completa todos los campos de contraseña.', 'danger')
-            return render_template('admission/change_password.html')
+            return render_template('admission/change_password.html', active_nav='seguridad')
 
         if not auth_service.verify_password(usuario, current_password):
             flash('La contraseña actual no es correcta.', 'danger')
-            return render_template('admission/change_password.html')
+            return render_template('admission/change_password.html', active_nav='seguridad')
 
         if current_password == new_password:
             flash('La nueva contraseña debe ser diferente a la actual.', 'warning')
-            return render_template('admission/change_password.html')
+            return render_template('admission/change_password.html', active_nav='seguridad')
 
         policy_error = _password_policy_error(new_password)
         if policy_error:
             flash(policy_error, 'danger')
-            return render_template('admission/change_password.html')
+            return render_template('admission/change_password.html', active_nav='seguridad')
 
         if new_password != confirm_password:
             flash('La confirmación no coincide con la nueva contraseña.', 'danger')
-            return render_template('admission/change_password.html')
+            return render_template('admission/change_password.html', active_nav='seguridad')
 
         auth_service.change_password(usuario_id, new_password)
         flash('Contraseña actualizada correctamente.', 'success')
         return redirect(url_for('admission.cambiar_password'))
 
-    return render_template('admission/change_password.html')
+    return render_template('admission/change_password.html', active_nav='seguridad')
 
 @admission_bp.route('/fechas')
 def fechas():
@@ -141,7 +142,8 @@ def fechas():
         registros=registros,
         today_url=f"/admission/historias/{today_str}",
         especialidades=especialidades,
-        medicos=medicos_dropdown
+        medicos=medicos_dropdown,
+        active_nav='fechas',
     )
 
 @admission_bp.route('/historias/<fecha>')
@@ -172,7 +174,8 @@ def historias_por_fecha(fecha):
                            fecha=fecha,
                            especialidades=especialidades,
                            medicos=medicos_dropdown,
-                           responsables=responsables)
+                           responsables=responsables,
+                           active_nav='fechas')
 
 @admission_bp.route('/historias_json/<fecha>')
 def historias_json_por_fecha(fecha):
@@ -306,7 +309,7 @@ def pacientes():
     return render_template(
         'admission/pacientes.html',
         total_pacientes=total,
-        active_nav='pacientes',
+        active_nav='historias_clinicas',
     )
 
 
