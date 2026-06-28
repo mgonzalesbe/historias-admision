@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
 from Aplicacion.Servicios.HistoriaService import HistoriaService
+from Aplicacion.Servicios.PacienteService import PacienteService
 from Aplicacion.Servicios.AuthService import AuthService
 from datetime import datetime
 import re
 
 admission_bp = Blueprint('admission', __name__, url_prefix='/admission')
 historia_service = HistoriaService()
+paciente_service = PacienteService()
 auth_service = AuthService()
 
 
@@ -293,3 +295,86 @@ def eliminar_historia():
 
     result = historia_service.eliminar_historia(int(historia_id))
     return jsonify({"status": "success" if result else "error"})
+
+
+@admission_bp.route('/pacientes')
+def pacientes():
+    try:
+        total = paciente_service.contar()
+    except Exception:
+        total = 0
+    return render_template(
+        'admission/pacientes.html',
+        total_pacientes=total,
+        active_nav='pacientes',
+    )
+
+
+@admission_bp.route('/pacientes/buscar')
+def pacientes_buscar():
+    termino = (request.args.get('termino') or '').strip()
+    tipo = (request.args.get('tipo') or 'nombre').strip().lower()
+    if len(termino) < 2:
+        return jsonify({
+            "status": "error",
+            "message": "Ingrese al menos 2 caracteres.",
+            "pacientes": [],
+        }), 400
+    try:
+        resultados = paciente_service.buscar(termino, tipo=tipo)
+        return jsonify({"status": "success", "pacientes": resultados})
+    except Exception as exc:
+        print(f"Error buscando pacientes: {exc}")
+        return jsonify({
+            "status": "error",
+            "message": "Error al buscar pacientes.",
+            "pacientes": [],
+        }), 500
+
+
+@admission_bp.route('/pacientes/<int:paciente_id>')
+def pacientes_obtener(paciente_id):
+    paciente = paciente_service.obtener(paciente_id)
+    if not paciente:
+        return jsonify({"status": "error", "message": "Paciente no encontrado."}), 404
+    return jsonify({"status": "success", "paciente": paciente})
+
+
+@admission_bp.route('/pacientes/guardar', methods=['POST'])
+def pacientes_crear():
+    data = request.json or {}
+    try:
+        paciente = paciente_service.crear(data)
+        return jsonify({"status": "success", "paciente": paciente})
+    except ValueError as exc:
+        return jsonify({"status": "error", "message": str(exc)}), 400
+    except Exception as exc:
+        print(f"Error creando paciente: {exc}")
+        return jsonify({"status": "error", "message": "No se pudo crear el paciente."}), 500
+
+
+@admission_bp.route('/pacientes/guardar/<int:paciente_id>', methods=['PUT'])
+def pacientes_actualizar(paciente_id):
+    data = request.json or {}
+    try:
+        paciente = paciente_service.actualizar(paciente_id, data)
+        if not paciente:
+            return jsonify({"status": "error", "message": "Paciente no encontrado."}), 404
+        return jsonify({"status": "success", "paciente": paciente})
+    except ValueError as exc:
+        return jsonify({"status": "error", "message": str(exc)}), 400
+    except Exception as exc:
+        print(f"Error actualizando paciente: {exc}")
+        return jsonify({"status": "error", "message": "No se pudo actualizar el paciente."}), 500
+
+
+@admission_bp.route('/pacientes/eliminar/<int:paciente_id>', methods=['DELETE'])
+def pacientes_eliminar(paciente_id):
+    try:
+        ok = paciente_service.eliminar(paciente_id)
+        if not ok:
+            return jsonify({"status": "error", "message": "Paciente no encontrado."}), 404
+        return jsonify({"status": "success"})
+    except Exception as exc:
+        print(f"Error eliminando paciente: {exc}")
+        return jsonify({"status": "error", "message": "No se pudo eliminar el paciente."}), 500

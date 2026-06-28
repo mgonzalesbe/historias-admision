@@ -25,6 +25,9 @@ dist/
 instance/
 *.db
 
+# Patient data exports (import locally, not in repo)
+paciente*.xlsx
+
 # IDE/OS files
 .vscode/
 .idea/

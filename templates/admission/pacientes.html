@@ -1,0 +1,167 @@
+{% set active_nav = active_nav|default('pacientes') %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pacientes - Admisión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admission-layout.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admission-pacientes.css') }}" />
+  </head>
+  <body>
+    <div class="container-fluid p-0">
+      <div class="row g-0">
+        <nav class="col-md-2 sidebar py-3">
+          <h5 class="text-white text-center mb-4">
+            <i class="bi bi-heart-pulse"></i> HC Admisión
+          </h5>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link {% if active_nav == 'dashboard' %}active{% endif %}" href="{{ url_for('admission.dashboard') }}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_nav == 'pacientes' %}active{% endif %}" href="{{ url_for('admission.pacientes') }}">
+                <i class="bi bi-person-vcard"></i> Pacientes
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_nav == 'fechas' %}active{% endif %}" href="{{ url_for('admission.fechas') }}">
+                <i class="bi bi-calendar-date"></i> Registro de Historias
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if active_nav == 'seguridad' %}active{% endif %}" href="{{ url_for('admission.cambiar_password') }}">
+                <i class="bi bi-shield-lock"></i> Seguridad
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <main class="col-md-10 d-flex flex-column p-0 app-shell-main">
+          {% include 'partials/app_topbar.html' %}
+          <div class="app-shell-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h2 class="mb-1">Pacientes</h2>
+                <p class="text-muted mb-0">Registro y búsqueda de pacientes e historias clínicas</p>
+              </div>
+              <span class="badge bg-primary">Total en base: {{ total_pacientes }}</span>
+            </div>
+
+            <div id="pacienteAlert" class="alert d-none" role="alert"></div>
+
+            <div class="card content-card mb-4">
+              <div class="card-body">
+                <h5 class="card-title mb-3"><i class="bi bi-search"></i> Búsqueda</h5>
+                <div class="row g-3 align-items-end">
+                  <div class="col-md-3">
+                    <label class="form-label" for="tipoBusqueda">Buscar por</label>
+                    <select id="tipoBusqueda" class="form-select">
+                      <option value="nombre">Apellidos y nombres</option>
+                      <option value="dni">DNI</option>
+                      <option value="historia">N.º Historia clínica</option>
+                    </select>
+                  </div>
+                  <div class="col-md-7">
+                    <label class="form-label" for="terminoBusqueda">Término</label>
+                    <input type="text" id="terminoBusqueda" class="form-control" placeholder="Escriba para buscar..." autocomplete="off" />
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" id="btnBuscar" class="btn btn-primary w-100">
+                      <i class="bi bi-search"></i> Buscar
+                    </button>
+                  </div>
+                </div>
+
+                <div class="table-responsive mt-4 pacientes-resultados-wrap">
+                  <table class="table table-hover table-sm align-middle mb-0" id="tablaResultados">
+                    <thead>
+                      <tr>
+                        <th>Historia clínica</th>
+                        <th>Apellidos y nombres</th>
+                        <th>DNI</th>
+                        <th>Fecha nac.</th>
+                        <th class="text-end">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody id="resultadosBody">
+                      <tr class="text-muted">
+                        <td colspan="5" class="text-center py-4">Use la búsqueda para ver pacientes</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card content-card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="card-title mb-0"><i class="bi bi-person-lines-fill"></i> Ficha del paciente</h5>
+                  <div class="btn-group">
+                    <button type="button" id="btnNuevo" class="btn btn-outline-primary btn-sm">
+                      <i class="bi bi-plus-lg"></i> Nuevo
+                    </button>
+                    <button type="button" id="btnEditar" class="btn btn-outline-secondary btn-sm" disabled>
+                      <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button type="button" id="btnGrabar" class="btn btn-success btn-sm" disabled>
+                      <i class="bi bi-save"></i> Grabar
+                    </button>
+                    <button type="button" id="btnCancelar" class="btn btn-outline-secondary btn-sm" disabled>
+                      Cancelar
+                    </button>
+                    <button type="button" id="btnEliminar" class="btn btn-outline-danger btn-sm" disabled>
+                      <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                  </div>
+                </div>
+
+                <form id="formPaciente" novalidate>
+                  <input type="hidden" id="pacienteId" value="" />
+                  <div class="row g-3">
+                    <div class="col-md-8">
+                      <label class="form-label" for="nombreCompleto">Apellidos y nombres <span class="text-danger">*</span></label>
+                      <input type="text" id="nombreCompleto" class="form-control" maxlength="200" disabled required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label" for="numeroHistoria">Historia clínica <span class="text-danger">*</span></label>
+                      <input type="text" id="numeroHistoria" class="form-control" maxlength="50" disabled required />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="form-label" for="fechaNacimiento">Fecha nacimiento</label>
+                      <input type="date" id="fechaNacimiento" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-3">
+                      <label class="form-label" for="dni">DNI</label>
+                      <input type="text" id="dni" class="form-control" maxlength="20" disabled />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="direccion">Dirección</label>
+                      <input type="text" id="direccion" class="form-control" maxlength="255" disabled />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="nombrePadre">Nombre padre</label>
+                      <input type="text" id="nombrePadre" class="form-control" maxlength="150" disabled />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="nombreMadre">Nombre madre</label>
+                      <input type="text" id="nombreMadre" class="form-control" maxlength="150" disabled />
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admission-pacientes.js') }}"></script>
+  </body>
+</html>

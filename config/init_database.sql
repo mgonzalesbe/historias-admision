@@ -72,6 +72,30 @@ CREATE TABLE Historias (
 );
 GO
 
+-- Tabla: Pacientes
+CREATE TABLE Pacientes (
+    IdPaciente INT IDENTITY(1,1) PRIMARY KEY,
+    NumeroHistoriaClinica VARCHAR(50) NOT NULL,
+    DNI VARCHAR(20) NULL,
+    NombreCompleto VARCHAR(200) NOT NULL,
+    FechaNacimiento DATE NULL,
+    Direccion VARCHAR(255) NULL,
+    NombrePadre VARCHAR(150) NULL,
+    NombreMadre VARCHAR(150) NULL,
+    FechaCreacion DATETIME NOT NULL DEFAULT GETDATE(),
+    Activo BIT NOT NULL DEFAULT 1
+);
+GO
+
+CREATE INDEX IX_Pacientes_NumeroHistoriaClinica ON Pacientes (NumeroHistoriaClinica);
+GO
+
+CREATE INDEX IX_Pacientes_DNI ON Pacientes (DNI) WHERE DNI IS NOT NULL;
+GO
+
+CREATE INDEX IX_Pacientes_NombreCompleto ON Pacientes (NombreCompleto);
+GO
+
 -- Tabla: TokensRegistro
 CREATE TABLE TokensRegistro (
     IdTokenRegistro INT IDENTITY(1,1) PRIMARY KEY,
