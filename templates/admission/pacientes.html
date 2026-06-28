@@ -17,121 +17,197 @@
         {% include 'partials/admission_sidebar.html' %}
         <main class="col-md-10 d-flex flex-column p-0 app-shell-main">
           {% include 'partials/app_topbar.html' %}
-          <div class="app-shell-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-              <div>
-                <h2 class="mb-1">Historias Clínicas</h2>
-                <p class="text-muted mb-0">Busque, registre y edite pacientes (catálogo del sistema antiguo)</p>
-              </div>
-              <span class="badge bg-primary">Total registrados: {{ total_pacientes }}</span>
-            </div>
-
-            <div id="pacienteAlert" class="alert d-none" role="alert"></div>
-
-            <div class="card content-card mb-4">
-              <div class="card-body">
-                <h5 class="card-title mb-3"><i class="bi bi-search"></i> Búsqueda</h5>
-                <div class="row g-3 align-items-end">
-                  <div class="col-md-3">
-                    <label class="form-label" for="tipoBusqueda">Buscar por</label>
-                    <select id="tipoBusqueda" class="form-select">
-                      <option value="nombre">Apellidos y nombres</option>
-                      <option value="dni">DNI</option>
-                      <option value="historia">N.º Historia clínica</option>
-                    </select>
-                  </div>
-                  <div class="col-md-7">
-                    <label class="form-label" for="terminoBusqueda">Apellidos y nombres / DNI / Historia</label>
-                    <input type="text" id="terminoBusqueda" class="form-control" placeholder="Escriba para buscar..." autocomplete="off" />
-                  </div>
-                  <div class="col-md-2">
-                    <button type="button" id="btnBuscar" class="btn btn-primary w-100">
-                      <i class="bi bi-search"></i> Buscar registro
-                    </button>
-                  </div>
+          <div class="hc-page">
+            <div class="hc-page-inner">
+              <header class="hc-page-header">
+                <div>
+                  <h1 class="hc-page-title">Historias Clínicas</h1>
+                  <p class="hc-page-lead">
+                    Consulte, registre y actualice pacientes. Busque por nombre, DNI o número de historia clínica.
+                  </p>
                 </div>
-
-                <div class="table-responsive mt-4 pacientes-resultados-wrap">
-                  <table class="table table-hover table-sm align-middle mb-0" id="tablaResultados">
-                    <thead>
-                      <tr>
-                        <th>Historia clínica</th>
-                        <th>Apellidos y nombres</th>
-                        <th>DNI</th>
-                        <th>Fecha nac.</th>
-                        <th class="text-end">Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody id="resultadosBody">
-                      <tr class="text-muted">
-                        <td colspan="5" class="text-center py-4">Use la búsqueda para ver pacientes</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="hc-stat-pills">
+                  <span class="hc-stat-pill hc-stat-pill--primary">
+                    <i class="bi bi-people-fill"></i>
+                    {{ total_pacientes }} registrados
+                  </span>
                 </div>
-              </div>
-            </div>
+              </header>
 
-            <div class="card content-card">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                  <h5 class="card-title mb-0"><i class="bi bi-person-lines-fill"></i> Ficha del paciente</h5>
-                  <div class="btn-group flex-wrap">
-                    <button type="button" id="btnNuevo" class="btn btn-outline-primary btn-sm">
+              <div class="hc-workspace">
+                <!-- Panel búsqueda -->
+                <aside class="hc-panel" aria-label="Búsqueda de pacientes">
+                  <div class="hc-panel-head">
+                    <h2 class="hc-panel-title"><i class="bi bi-search"></i> Buscar paciente</h2>
+                    <button type="button" id="btnNuevoTop" class="btn btn-primary btn-sm">
                       <i class="bi bi-plus-lg"></i> Nuevo
                     </button>
-                    <button type="button" id="btnEditar" class="btn btn-outline-secondary btn-sm" disabled>
-                      <i class="bi bi-pencil"></i> Editar
-                    </button>
-                    <button type="button" id="btnGrabar" class="btn btn-success btn-sm" disabled>
-                      <i class="bi bi-save"></i> Grabar
-                    </button>
-                    <button type="button" id="btnCancelar" class="btn btn-outline-secondary btn-sm" disabled>
-                      Cancelar
-                    </button>
-                    <button type="button" id="btnEliminar" class="btn btn-outline-danger btn-sm" disabled>
-                      <i class="bi bi-trash"></i> Eliminar
-                    </button>
                   </div>
-                </div>
+                  <div class="hc-panel-body">
+                    <div class="hc-search-types" role="tablist" aria-label="Tipo de búsqueda">
+                      <button type="button" class="hc-type-btn active" data-tipo="nombre" role="tab" aria-selected="true">
+                        <i class="bi bi-person"></i> Nombre
+                      </button>
+                      <button type="button" class="hc-type-btn" data-tipo="dni" role="tab" aria-selected="false">
+                        <i class="bi bi-credit-card-2-front"></i> DNI
+                      </button>
+                      <button type="button" class="hc-type-btn" data-tipo="historia" role="tab" aria-selected="false">
+                        <i class="bi bi-file-medical"></i> Historia clínica
+                      </button>
+                    </div>
 
-                <form id="formPaciente" novalidate>
-                  <input type="hidden" id="pacienteId" value="" />
-                  <div class="row g-3">
-                    <div class="col-12">
-                      <label class="form-label" for="nombreCompleto">Apellidos y nombres <span class="text-danger">*</span></label>
-                      <input type="text" id="nombreCompleto" class="form-control" maxlength="200" disabled required />
+                    <div class="hc-search-bar">
+                      <div class="hc-search-input-wrap">
+                        <i class="bi bi-search hc-search-icon" aria-hidden="true"></i>
+                        <input
+                          type="search"
+                          id="terminoBusqueda"
+                          class="form-control"
+                          placeholder="Apellidos y nombres del paciente..."
+                          autocomplete="off"
+                          aria-label="Término de búsqueda"
+                        />
+                        <button type="button" id="btnLimpiarBusqueda" class="hc-clear-btn d-none" aria-label="Limpiar búsqueda">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </div>
+                      <button type="button" id="btnBuscar" class="btn btn-primary hc-btn-search">
+                        Buscar
+                      </button>
                     </div>
-                    <div class="col-md-4">
-                      <label class="form-label" for="fechaNacimiento">Fecha nacimiento</label>
-                      <input type="date" id="fechaNacimiento" class="form-control" disabled />
+
+                    <div class="hc-results-meta">
+                      <span id="resultadosContador">Escriba al menos 2 caracteres</span>
+                      <span id="resultadosTipo" class="text-muted"></span>
                     </div>
-                    <div class="col-md-8">
-                      <label class="form-label" for="direccion">Dirección</label>
-                      <input type="text" id="direccion" class="form-control" maxlength="255" disabled />
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label" for="nombrePadre">Nombre padre <span class="text-muted small">(opcional)</span></label>
-                      <input type="text" id="nombrePadre" class="form-control" maxlength="150" disabled />
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label" for="nombreMadre">Nombre madre <span class="text-muted small">(opcional)</span></label>
-                      <input type="text" id="nombreMadre" class="form-control" maxlength="150" disabled />
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label" for="numeroHistoria">Historia clínica <span class="text-danger">*</span></label>
-                      <input type="text" id="numeroHistoria" class="form-control" maxlength="50" disabled required />
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label" for="dni">DNI</label>
-                      <input type="text" id="dni" class="form-control" maxlength="20" disabled />
+
+                    <div id="resultadosLista" class="hc-results-list" role="listbox" aria-label="Resultados">
+                      <div class="hc-empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>Los resultados aparecerán aquí</p>
+                      </div>
                     </div>
                   </div>
-                </form>
+                </aside>
+
+                <!-- Panel ficha -->
+                <section class="hc-panel" aria-label="Ficha del paciente">
+                  <div class="hc-panel-head">
+                    <h2 class="hc-panel-title"><i class="bi bi-person-vcard"></i> Ficha del paciente</h2>
+                    <span id="modoBadge" class="hc-mode-badge hc-mode-badge--view d-none">Consulta</span>
+                  </div>
+                  <div class="hc-panel-body">
+                    <div id="detalleVacio" class="hc-detail-empty">
+                      <i class="bi bi-person-plus"></i>
+                      <p class="mb-2 fw-semibold text-secondary">Ningún paciente seleccionado</p>
+                      <p class="small mb-3">Busque en el panel izquierdo o cree un registro nuevo.</p>
+                      <button type="button" id="btnNuevoEmpty" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-plus-lg"></i> Registrar paciente
+                      </button>
+                    </div>
+
+                    <div id="detalleContenido" class="d-none">
+                      <div class="hc-profile-bar">
+                        <div class="hc-profile-avatar" id="profileAvatar" aria-hidden="true">?</div>
+                        <div class="hc-profile-info">
+                          <h3 class="hc-profile-name" id="profileName">—</h3>
+                          <p class="hc-profile-meta" id="profileMeta">—</p>
+                        </div>
+                        <div class="hc-actions">
+                          <button type="button" id="btnEditar" class="btn btn-outline-primary btn-sm" disabled>
+                            <i class="bi bi-pencil"></i> Editar
+                          </button>
+                          <button type="button" id="btnGrabar" class="btn btn-success btn-sm" disabled>
+                            <i class="bi bi-check-lg"></i> Guardar
+                          </button>
+                          <button type="button" id="btnCancelar" class="btn btn-outline-secondary btn-sm" disabled>
+                            Cancelar
+                          </button>
+                          <button type="button" id="btnEliminar" class="btn btn-outline-danger btn-sm" disabled>
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <form id="formPaciente" novalidate>
+                        <input type="hidden" id="pacienteId" value="" />
+
+                        <div class="hc-form-section">
+                          <h4 class="hc-form-section-title">Datos personales</h4>
+                          <div class="row g-3">
+                            <div class="col-12">
+                              <label class="form-label" for="nombreCompleto">Apellidos y nombres <span class="text-danger">*</span></label>
+                              <input type="text" id="nombreCompleto" class="form-control" maxlength="200" disabled required />
+                              <div class="hc-invalid-feedback">Este campo es obligatorio</div>
+                            </div>
+                            <div class="col-md-5">
+                              <label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label>
+                              <input type="date" id="fechaNacimiento" class="form-control" disabled />
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label" for="dni">DNI</label>
+                              <input type="text" id="dni" class="form-control" maxlength="20" disabled inputmode="numeric" />
+                            </div>
+                            <div class="col-md-3">
+                              <label class="form-label" for="numeroHistoria">Historia clínica <span class="text-danger">*</span></label>
+                              <input type="text" id="numeroHistoria" class="form-control" maxlength="50" disabled required />
+                              <div class="hc-invalid-feedback">Número de historia obligatorio</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="hc-form-section">
+                          <h4 class="hc-form-section-title">Ubicación</h4>
+                          <div class="row g-3">
+                            <div class="col-12">
+                              <label class="form-label" for="direccion">Dirección</label>
+                              <input type="text" id="direccion" class="form-control" maxlength="255" disabled />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="hc-form-section mb-0">
+                          <h4 class="hc-form-section-title">Datos familiares <span class="hc-field-hint">(opcionales)</span></h4>
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <label class="form-label" for="nombrePadre">Nombre del padre</label>
+                              <input type="text" id="nombrePadre" class="form-control" maxlength="150" disabled />
+                            </div>
+                            <div class="col-md-6">
+                              <label class="form-label" for="nombreMadre">Nombre de la madre</label>
+                              <input type="text" id="nombreMadre" class="form-control" maxlength="150" disabled />
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </section>
               </div>
             </div>
           </div>
         </main>
+      </div>
+    </div>
+
+    <div id="toastWrap" class="hc-toast-wrap" aria-live="polite"></div>
+
+    <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title" id="modalEliminarLabel">Eliminar paciente</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-0">¿Confirma que desea eliminar a <strong id="modalEliminarNombre"></strong> del registro?</p>
+            <p class="text-muted small mt-2 mb-0">Esta acción no se puede deshacer.</p>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" id="btnConfirmarEliminar" class="btn btn-danger">Eliminar</button>
+          </div>
+        </div>
       </div>
     </div>
 
